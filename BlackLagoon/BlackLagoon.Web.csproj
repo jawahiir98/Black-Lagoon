@@ -14,4 +14,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0-preview.3.24172.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BlackLagoon.Infrastructure\BlackLagoon.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
