@@ -38,9 +38,24 @@ namespace BlackLagoon.Web.Controllers
                 return View(obj);
             }
         }
-        public IActionResult Update()
+        public IActionResult Update(int villaId)
         {
-            return View();
+            Villa? obj = db.Villas.FirstOrDefault(u => u.Id == villaId);
+            return View(obj);
+        }
+        [HttpPost]
+        public IActionResult Update(Villa obj)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Villas.Update(obj);
+                db.SaveChanges();
+                return RedirectToAction("Index");   
+            }
+            else
+            {
+                return View(obj);
+            }
         }
     }
 }
