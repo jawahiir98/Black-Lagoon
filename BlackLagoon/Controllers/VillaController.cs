@@ -38,5 +38,9 @@ namespace BlackLagoon.Web.Controllers
                 return View(obj);
             }
         }
+        public IActionResult Update()
+        {
+            return View();
+        }
     }
 }
