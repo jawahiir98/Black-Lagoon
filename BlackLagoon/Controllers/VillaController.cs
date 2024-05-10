@@ -1,4 +1,5 @@
-﻿using BlackLagoon.Infrastructure.Data;
+﻿using BlackLagoon.Domain.Entities;
+using BlackLagoon.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlackLagoon.Web.Controllers
@@ -18,6 +19,20 @@ namespace BlackLagoon.Web.Controllers
         public IActionResult Create() 
         {
             return View();
+        }
+        [HttpPost]
+        public IActionResult Create(Villa obj)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Villas.Add(obj);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(obj);
+            }
         }
     }
 }
