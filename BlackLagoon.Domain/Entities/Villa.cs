@@ -11,7 +11,7 @@ namespace BlackLagoon.Domain.Entities
     public class Villa
     {
         public int Id { get; set; }
-        [Range(1, 50)]
+        [MaxLength(50,ErrorMessage = "Name cannot exceed 50 characters")]
         public required string Name { get; set; }
         public string? Description { get; set; }
         [Range(1, 10000)]
@@ -19,6 +19,7 @@ namespace BlackLagoon.Domain.Entities
         public double Price { get; set; }
         [DisplayName("Size by sqare-feet")]
         public int Sqft { get; set; }
+        [Range(1, 10)]
         public int Occupancy { get; set; }
         [DisplayName("Image url")]
         public string? ImageUrl { get; set; }
