@@ -31,10 +31,12 @@ namespace BlackLagoon.Web.Controllers
             {
                 db.Villas.Add(obj);
                 db.SaveChanges();
+                TempData["success"] = "Villa created successfully.";
                 return RedirectToAction("Index");
             }
             else
             {
+                TempData["error"] = "Could not create Villa.";
                 return View(obj);
             }
         }
@@ -51,10 +53,12 @@ namespace BlackLagoon.Web.Controllers
             {
                 db.Villas.Update(obj);
                 db.SaveChanges();
+                TempData["success"] = "Villa updated successfully.";
                 return RedirectToAction("Index");   
             }
             else
             {
+                TempData["error"] = "Could not update Villa.";
                 return View(obj);
             }
         }
@@ -67,11 +71,16 @@ namespace BlackLagoon.Web.Controllers
         public IActionResult Delete(Villa obj)
         {
             Villa? objFromDb = db.Villas.FirstOrDefault(u => u.Id == obj.Id);
-            if (obj == null) return RedirectToAction("Error", "Home");
+            if (obj == null)
+            {
+                TempData["error"] = "Could not delete Villa.";
+                return RedirectToAction("Error", "Home");
+            }
             else
             {
                 db.Villas.Remove(objFromDb);
                 db.SaveChanges();
+                TempData["success"] = "Villa deleted successfully.";
                 return RedirectToAction("Index");
             }
         }
