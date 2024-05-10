@@ -23,6 +23,7 @@ namespace BlackLagoon.Web.Controllers
         [HttpPost]
         public IActionResult Create(Villa obj)
         {
+            if (obj == null) return RedirectToAction("Error", "Home");
             if (obj.Name == obj.Description)
             {
                 ModelState.AddModelError("name", "The description cannot exactly match the Name.");
@@ -55,6 +56,23 @@ namespace BlackLagoon.Web.Controllers
             else
             {
                 return View(obj);
+            }
+        }
+        public IActionResult Delete(int villaId)
+        {
+            Villa? obj = db.Villas.FirstOrDefault(u => u.Id == villaId);
+            return View(obj);
+        }
+        [HttpPost]
+        public IActionResult Delete(Villa obj)
+        {
+            Villa? objFromDb = db.Villas.FirstOrDefault(u => u.Id == obj.Id);
+            if (obj == null) return RedirectToAction("Error", "Home");
+            else
+            {
+                db.Villas.Remove(objFromDb);
+                db.SaveChanges();
+                return RedirectToAction("Index");
             }
         }
     }
