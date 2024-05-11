@@ -1,4 +1,5 @@
-﻿using BlackLagoon.Infrastructure.Data;
+﻿using BlackLagoon.Domain.Entities;
+using BlackLagoon.Infrastructure.Data;
 using BlackLagoon.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Mvc;
@@ -44,6 +45,42 @@ namespace BlackLagoon.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
             if (roomExists) TempData["error"] = "The villa Number already exists.";
+
+            obj.VillaList = db.Villas.ToList().Select(u => new SelectListItem
+            {
+                Text = u.Name,
+                Value = u.Id.ToString()
+            });
+
+            return View(obj);
+        }
+        public IActionResult Update(int villaNumberId)
+        {
+            VillaNumberVM villaNumberVM = new()
+            {
+                VillaList = db.Villas.ToList().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }),
+                VillaNumber = db.VillaNumbers.FirstOrDefault(u => u.Villa_Number == villaNumberId)
+            };
+            if (villaNumberVM.VillaNumber == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            return View(villaNumberVM);
+}
+        [HttpPost]
+        public IActionResult Update(VillaNumberVM obj)
+        {
+            if (ModelState.IsValid)
+            {
+                db.VillaNumbers.Update(obj.VillaNumber);
+                db.SaveChanges();
+                TempData["success"] = "Villa number updated successfully.";
+                return RedirectToAction(nameof(Index));
+            }
 
             obj.VillaList = db.Villas.ToList().Select(u => new SelectListItem
             {
