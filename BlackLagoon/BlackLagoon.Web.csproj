@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BlackLagoon.Infrastructure\BlackLagoon.Infrastructure.csproj" />
+	  
   </ItemGroup>
 
 </Project>

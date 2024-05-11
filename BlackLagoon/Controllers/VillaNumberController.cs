@@ -15,5 +15,9 @@ namespace BlackLagoon.Web.Controllers
             var villaNumbers = db.VillaNumbers.ToList();
             return View(villaNumbers);
         }
+        public IActionResult Create() 
+        {
+            return View();
+        }
     }
 }
