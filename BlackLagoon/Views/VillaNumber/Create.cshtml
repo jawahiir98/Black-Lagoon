@@ -38,7 +38,7 @@
                         </button>
                     </div>
                     <div class="col-6 col-md-3">
-                        <button asp-action="Index" class="btn btn-danger w-100">
+                        <button asp-controller="VillaNumber" asp-action="Index" class="btn btn-danger w-100" id="cancelButton">
                             <i class="bi bi-x-circle-fill"></i>&nbsp; Cancel
                         </button>
                     </div>
@@ -53,4 +53,11 @@
     @{
         <partial name="_ValidationScriptsPartial"></partial>
     }
+    <script>
+    document.getElementById("cancelButton").addEventListener("click", function(event) {
+      event.preventDefault(); // Prevent form submission
+      // Optionally, redirect to the desired URL using window.location.href
+            window.location.href = "@Url.Action("Index", "VillaNumber")";
+    });
+    </script>
 }
