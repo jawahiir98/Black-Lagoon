@@ -2,6 +2,7 @@
 using BlackLagoon.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlackLagoon.Web.Controllers
 {
@@ -14,7 +15,7 @@ namespace BlackLagoon.Web.Controllers
         }
         public IActionResult Index()
         {
-            var villaNumbers = db.VillaNumbers.ToList();
+            var villaNumbers = db.VillaNumbers.Include(u=>u.Villa).ToList();
             return View(villaNumbers);
         }
         public IActionResult Create() 
