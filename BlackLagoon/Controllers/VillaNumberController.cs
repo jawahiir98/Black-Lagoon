@@ -1,5 +1,7 @@
 ﻿using BlackLagoon.Infrastructure.Data;
+using BlackLagoon.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BlackLagoon.Web.Controllers
 {
@@ -17,7 +19,16 @@ namespace BlackLagoon.Web.Controllers
         }
         public IActionResult Create() 
         {
-            return View();
+            VillaNumberVM villaNumberVM = new()
+            {
+                VillaList = db.Villas.ToList().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                })
+            };
+            
+            return View(villaNumberVM);
         }
     }
 }
