@@ -1,6 +1,7 @@
 ﻿using BlackLagoon.Application.Common.Interfaces;
 using BlackLagoon.Domain.Entities;
 using BlackLagoon.Infrastructure.Data;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlackLagoon.Web.Controllers
@@ -8,9 +9,11 @@ namespace BlackLagoon.Web.Controllers
     public class VillaController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
-        public VillaController(IUnitOfWork _unitOfWork)
+        private readonly IWebHostEnvironment webHostEnvironment;
+        public VillaController(IUnitOfWork _unitOfWork, IWebHostEnvironment _webHostEnvironment)
         {
             unitOfWork = _unitOfWork;
+            webHostEnvironment = _webHostEnvironment;
         }
         public IActionResult Index()
         {
@@ -30,6 +33,20 @@ namespace BlackLagoon.Web.Controllers
             }
             if (ModelState.IsValid)
             {
+                if (obj.Image != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(obj.Image.FileName);
+                    string imagePath = Path.Combine(webHostEnvironment.WebRootPath, @"images\VillaImage");
+
+                    using var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create);
+                    obj.Image.CopyTo(fileStream);
+
+                    obj.ImageUrl = @"\images\VillaImage\" + fileName;
+                }
+                else
+                {
+                    obj.ImageUrl = "https://placehold.co/600x400";
+                }
                 unitOfWork.Villa.Add(obj);
                 unitOfWork.Save();
                 TempData["success"] = "Villa created successfully.";
