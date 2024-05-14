@@ -1,4 +1,5 @@
-﻿using BlackLagoon.Domain.Entities;
+﻿using BlackLagoon.Application.Common.Interfaces;
+using BlackLagoon.Domain.Entities;
 using BlackLagoon.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,14 +7,14 @@ namespace BlackLagoon.Web.Controllers
 {
     public class VillaController : Controller
     {
-        private readonly ApplicationDbContext db;
-        public VillaController(ApplicationDbContext _db)
+        private readonly IVillaRepository villaRepo;
+        public VillaController(IVillaRepository _villaRepo)
         {
-            db = _db;
+            villaRepo = _villaRepo;
         }
         public IActionResult Index()
         {
-            var Villas = db.Villas.ToList();
+            var Villas = villaRepo.GetAll();
             return View(Villas);
         }
         public IActionResult Create() 
@@ -29,8 +30,8 @@ namespace BlackLagoon.Web.Controllers
             }
             if (ModelState.IsValid)
             {
-                db.Villas.Add(obj);
-                db.SaveChanges();
+                villaRepo.Add(obj);
+                villaRepo.Save();
                 TempData["success"] = "Villa created successfully.";
                 return RedirectToAction("Index");
             }
@@ -42,7 +43,7 @@ namespace BlackLagoon.Web.Controllers
         }
         public IActionResult Update(int villaId)
         {
-            Villa? obj = db.Villas.FirstOrDefault(u => u.Id == villaId);
+            Villa? obj = villaRepo.Get(u => u.Id == villaId);
             if (obj == null) return RedirectToAction("Error", "Home");
             return View(obj);
         }
@@ -51,8 +52,8 @@ namespace BlackLagoon.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Villas.Update(obj);
-                db.SaveChanges();
+                villaRepo.Update(obj);
+                villaRepo.Save();
                 TempData["success"] = "Villa updated successfully.";
                 return RedirectToAction("Index");   
             }
@@ -64,13 +65,13 @@ namespace BlackLagoon.Web.Controllers
         }
         public IActionResult Delete(int villaId)
         {
-            Villa? obj = db.Villas.FirstOrDefault(u => u.Id == villaId);
+            Villa? obj = villaRepo.Get(u => u.Id == villaId);
             return View(obj);
         }
         [HttpPost]
         public IActionResult Delete(Villa obj)
         {
-            Villa? objFromDb = db.Villas.FirstOrDefault(u => u.Id == obj.Id);
+            Villa? objFromDb = villaRepo.Get(u => u.Id == obj.Id);
             if (obj == null)
             {
                 TempData["error"] = "Could not delete Villa.";
@@ -78,8 +79,8 @@ namespace BlackLagoon.Web.Controllers
             }
             else
             {
-                db.Villas.Remove(objFromDb);
-                db.SaveChanges();
+                villaRepo.Remove(objFromDb);
+                villaRepo.Save();
                 TempData["success"] = "Villa deleted successfully.";
                 return RedirectToAction("Index");
             }

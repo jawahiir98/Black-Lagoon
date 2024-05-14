@@ -64,7 +64,7 @@ namespace BlackLagoon.Infrastructure.Repository
 
         public void Update(Villa villa)
         {
-            throw new NotImplementedException();
+            db.Update(villa);
         }
     }
 }
