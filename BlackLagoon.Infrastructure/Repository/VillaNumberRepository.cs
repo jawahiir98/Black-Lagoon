@@ -1,4 +1,5 @@
 ﻿using BlackLagoon.Application.Common.Interfaces;
+using BlackLagoon.Domain.Entities;
 using BlackLagoon.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -8,22 +9,22 @@ using System.Threading.Tasks;
 
 namespace BlackLagoon.Infrastructure.Repository
 {
-    public class UnitOfWork : IUnitOfWork
+    public class VillaNumberRepository : Repository<VillaNumber>, IVillaNumberRepository
     {
         private readonly ApplicationDbContext db;
-        public IVillaRepository Villa { get; private set; }
-        public IVillaNumberRepository VillaNumber { get; private set; }
-
-        public UnitOfWork(ApplicationDbContext _db)
+        public VillaNumberRepository(ApplicationDbContext _db) : base(_db)
         {
             db = _db;
-            Villa = new VillaRepository(db);
-            VillaNumber = new VillaNumberRepository(db);
         }
+
         public void Save()
         {
             db.SaveChanges();
         }
 
+        public void Update(VillaNumber entity)
+        {
+            db.Update(entity);
+        }
     }
 }

@@ -1,5 +1,7 @@
-﻿using BlackLagoon.Domain.Entities;
+﻿using BlackLagoon.Application.Common.Interfaces;
+using BlackLagoon.Domain.Entities;
 using BlackLagoon.Infrastructure.Data;
+using BlackLagoon.Infrastructure.Repository;
 using BlackLagoon.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Mvc;
@@ -10,21 +12,21 @@ namespace BlackLagoon.Web.Controllers
 {
     public class VillaNumberController : Controller
     {
-        private readonly ApplicationDbContext db;
-        public VillaNumberController(ApplicationDbContext _db)
+        private readonly IUnitOfWork unitOfWork;
+        public VillaNumberController(IUnitOfWork _unitOfWork)
         {
-            db = _db;
+            unitOfWork = _unitOfWork;
         }
         public IActionResult Index()
         {
-            var villaNumbers = db.VillaNumbers.Include(u=>u.Villa).ToList();
+            var villaNumbers = unitOfWork.VillaNumber.GetAll(includeProperties: "Villa");
             return View(villaNumbers);
         }
         public IActionResult Create() 
         {
             VillaNumberVM villaNumberVM = new()
             {
-                VillaList = db.Villas.ToList().Select(u => new SelectListItem
+                VillaList = unitOfWork.Villa.GetAll().Select(u => new SelectListItem
                 {
                     Text = u.Name,
                     Value = u.Id.ToString()
@@ -36,17 +38,17 @@ namespace BlackLagoon.Web.Controllers
         [HttpPost]
         public IActionResult Create(VillaNumberVM obj)
         {
-            bool roomExists = db.VillaNumbers.Any(u => u.Villa_Number == obj.VillaNumber.Villa_Number);
+            bool roomExists = unitOfWork.VillaNumber.Any(u => u.Villa_Number == obj.VillaNumber.Villa_Number);
             if (ModelState.IsValid && !roomExists)
             {
-                db.VillaNumbers.Add(obj.VillaNumber);
-                db.SaveChanges();
+                unitOfWork.VillaNumber.Add(obj.VillaNumber);
+                unitOfWork.Save();
                 TempData["success"] = "Villa number added successfully.";
                 return RedirectToAction(nameof(Index));
             }
             if (roomExists) TempData["error"] = "The villa Number already exists.";
 
-            obj.VillaList = db.Villas.ToList().Select(u => new SelectListItem
+            obj.VillaList = unitOfWork.Villa.GetAll().Select(u => new SelectListItem
             {
                 Text = u.Name,
                 Value = u.Id.ToString()
@@ -58,12 +60,12 @@ namespace BlackLagoon.Web.Controllers
         {
             VillaNumberVM villaNumberVM = new()
             {
-                VillaList = db.Villas.ToList().Select(u => new SelectListItem
+                VillaList = unitOfWork.Villa.GetAll().Select(u => new SelectListItem
                 {
                     Text = u.Name,
                     Value = u.Id.ToString()
                 }),
-                VillaNumber = db.VillaNumbers.FirstOrDefault(u => u.Villa_Number == villaNumberId)
+                VillaNumber = unitOfWork.VillaNumber.Get(u => u.Villa_Number == villaNumberId)
             };
             if (villaNumberVM.VillaNumber == null)
             {
@@ -76,13 +78,13 @@ namespace BlackLagoon.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.VillaNumbers.Update(obj.VillaNumber);
-                db.SaveChanges();
+                unitOfWork.VillaNumber.Update(obj.VillaNumber);
+                unitOfWork.Save();
                 TempData["success"] = "Villa number updated successfully.";
                 return RedirectToAction(nameof(Index));
             }
 
-            obj.VillaList = db.Villas.ToList().Select(u => new SelectListItem
+            obj.VillaList = unitOfWork.Villa.GetAll().Select(u => new SelectListItem
             {
                 Text = u.Name,
                 Value = u.Id.ToString()
@@ -94,12 +96,12 @@ namespace BlackLagoon.Web.Controllers
         {
             VillaNumberVM villaNumberVM = new()
             {
-                VillaList = db.Villas.ToList().Select(u => new SelectListItem
+                VillaList = unitOfWork.Villa.GetAll().Select(u => new SelectListItem
                 {
                     Text = u.Name,
                     Value = u.Id.ToString()
                 }),
-                VillaNumber = db.VillaNumbers.FirstOrDefault(u => u.Villa_Number == villaNumberId)
+                VillaNumber = unitOfWork.VillaNumber.Get(u => u.Villa_Number == villaNumberId)
             };
             if (villaNumberVM.VillaNumber == null)
             {
@@ -110,12 +112,11 @@ namespace BlackLagoon.Web.Controllers
         [HttpPost]
         public IActionResult Delete(VillaNumberVM villaNumberVM)
         {
-            VillaNumber? objFromDb = db.VillaNumbers
-                .FirstOrDefault(u => u.Villa_Number == villaNumberVM.VillaNumber.Villa_Number);
+            VillaNumber? objFromDb = unitOfWork.VillaNumber.Get(u => u.Villa_Number == villaNumberVM.VillaNumber.Villa_Number);
             if (objFromDb is not null)
             {
-                db.VillaNumbers.Remove(objFromDb);
-                db.SaveChanges();
+                unitOfWork.VillaNumber.Remove(objFromDb);
+                unitOfWork.Save();
                 TempData["success"] = "The villa number has been deleted successfully.";
                 return RedirectToAction("Index");
             }

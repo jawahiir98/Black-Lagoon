@@ -31,7 +31,7 @@ namespace BlackLagoon.Web.Controllers
             if (ModelState.IsValid)
             {
                 unitOfWork.Villa.Add(obj);
-                unitOfWork.Villa.Save();
+                unitOfWork.Save();
                 TempData["success"] = "Villa created successfully.";
                 return RedirectToAction("Index");
             }
@@ -53,7 +53,7 @@ namespace BlackLagoon.Web.Controllers
             if (ModelState.IsValid)
             {
                 unitOfWork.Villa.Update(obj);
-                unitOfWork.Villa.Save();
+                unitOfWork.Save();
                 TempData["success"] = "Villa updated successfully.";
                 return RedirectToAction("Index");   
             }
@@ -80,7 +80,7 @@ namespace BlackLagoon.Web.Controllers
             else
             {
                 unitOfWork.Villa.Remove(objFromDb);
-                unitOfWork.Villa.Save();
+                unitOfWork.Save();
                 TempData["success"] = "Villa deleted successfully.";
                 return RedirectToAction("Index");
             }
