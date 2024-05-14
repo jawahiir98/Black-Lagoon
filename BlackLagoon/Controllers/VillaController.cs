@@ -81,7 +81,7 @@ namespace BlackLagoon.Web.Controllers
             {
                 villaRepo.Remove(objFromDb);
                 villaRepo.Save();
-                TempData["success"] = "Villa deleted successfully.";
+                 TempData["success"] = "Villa deleted successfully.";
                 return RedirectToAction("Index");
             }
         }
