@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BlackLagoon.Domain\BlackLagoon.Domain.csproj" />
+    <ProjectReference Include="..\BlackLagoon.Application\BlackLagoon.Application.csproj" />
   </ItemGroup>
 
 </Project>
