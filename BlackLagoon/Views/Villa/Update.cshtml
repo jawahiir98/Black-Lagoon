@@ -40,8 +40,8 @@
                         <span asp-validation-for="Occupancy" class="text-danger"></span>
                     </div>
                     <div class="form-floating py-1 col-12">
-                        <input asp-for="ImageUrl" class="form-control border shadow" />
-                        <input asp-for="Image" class="ms-2"></input>
+                        <input asp-for="ImageUrl" hidden class="form-control border shadow" />
+                        <input asp-for="Image"  class="form-control border shadow" />
                         <span asp-validation-for="ImageUrl" class="text-danger"></span>
                     </div>
                     <div class="row pt-2">
@@ -59,7 +59,7 @@
                 </div>
             </div>
             <div class="col-2">
-                <img src="@Model.ImageUrl" width="100%" style="border-radius:5px border:1px solid #bbb9b9" />
+                <img src="@Model.ImageUrl" width="100%" style="border-radius:5px; border:1px solid #bbb9b9" />
             </div>
             
         </form>

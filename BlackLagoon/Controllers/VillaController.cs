@@ -114,6 +114,17 @@ namespace BlackLagoon.Web.Controllers
             }
             else
             {
+                if(obj is not null)
+                {
+                    if (!string.IsNullOrEmpty(objFromDb.ImageUrl))
+                    {
+                        string oldImagePath = Path.Combine(webHostEnvironment.WebRootPath, objFromDb.ImageUrl.TrimStart('\\'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+                }
                 unitOfWork.Villa.Remove(objFromDb);
                 unitOfWork.Save();
                 TempData["success"] = "Villa deleted successfully.";
