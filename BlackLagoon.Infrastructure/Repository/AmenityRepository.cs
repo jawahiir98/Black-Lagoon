@@ -24,7 +24,7 @@ namespace BlackLagoon.Infrastructure.Repository
 
         public void Update(Amenity entity)
         {
-            db.Update(entity);
+            db.Amenities.Update(entity);
         }
     }
 }

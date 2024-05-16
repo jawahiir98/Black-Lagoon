@@ -15,7 +15,7 @@ namespace BlackLagoon.Web.Controllers
         }
         public IActionResult Index()
         {
-            var Amenities = unitOfWork.Amenity.GetAll();
+            var Amenities = unitOfWork.Amenity.GetAll(includeProperties:"Villa");
             return View(Amenities);
         }
         public IActionResult Create()

@@ -19,6 +19,7 @@ namespace BlackLagoon.Infrastructure.Repository
         {
             db = _db;
             Villa = new VillaRepository(db);
+            Amenity = new AmenityRepository(db);
             VillaNumber = new VillaNumberRepository(db);
         }
         public void Save()
