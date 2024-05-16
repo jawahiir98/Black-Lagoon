@@ -1,0 +1,63 @@
+﻿@model AmenityVM
+
+<div class="w-100 card border-0 p-4">
+    <div class="card-header bg-gradient m-lg-0 py-3" style="background-color: #d66711">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2"> Create new villa number</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body border p-4">
+        <form method="post" class="row">
+            <div asp-validation-summary="ModelOnly"></div>
+            <div class="p-3">
+                @* <div asp-validation-summary="All"></div> *@
+                <div class="form-floating py-1 col-12">
+                    <select asp-for="@Model.Amenity.VillaId" asp-items="@Model.VillaList"
+                            class="form-select border shadow">
+                        <option disabled selected>--Select Villa--</option>
+                    </select>
+                    <label asp-for="Amenity.VillaId" class="ms-2"></label>
+                    <span asp-validation-for="Amenity.VillaId" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-1 col-12">
+                    <input asp-for="Amenity.Name" class="form-control border shadow" />
+                    <label asp-for="Amenity.Name" class="ms-2"></label>
+                    <span asp-validation-for="Amenity.Name" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-1 col-12">
+                    <input asp-for="Amenity.Description" class="form-control border shadow" />
+                    <label asp-for="Amenity.Description" class="ms-2"></label>
+                    <span asp-validation-for="Amenity.Description" class="text-danger"></span>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-6 col-md-3">
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-check-circle-fill"></i>&nbsp; Create
+                        </button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <button asp-controller="VillaNumber" asp-action="Index" class="btn btn-danger w-100" id="cancelButton">
+                            <i class="bi bi-x-circle-fill"></i>&nbsp; Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial"></partial>
+    }
+    <script>
+        document.getElementById("cancelButton").addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent form submission
+            // Optionally, redirect to the desired URL using window.location.href
+            window.location.href = "@Url.Action("Index", "VillaNumber")";
+        });
+    </script>
+}

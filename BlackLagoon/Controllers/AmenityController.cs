@@ -1,6 +1,9 @@
 ﻿using BlackLagoon.Application.Common.Interfaces;
 using BlackLagoon.Domain.Entities;
+using BlackLagoon.Infrastructure.Repository;
+using BlackLagoon.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BlackLagoon.Web.Controllers
 {
@@ -20,79 +23,100 @@ namespace BlackLagoon.Web.Controllers
         }
         public IActionResult Create()
         {
-            return View();
+            AmenityVM amenityVM = new()
+            {
+                VillaList = unitOfWork.Villa.GetAll().Select(Villa => new SelectListItem
+                {
+                    Text = Villa.Name,
+                    Value = Villa.Id.ToString()
+                })
+            };
+            return View(amenityVM);
         }
         [HttpPost]
-        public IActionResult Create(Amenity obj)
+        public IActionResult Create(AmenityVM obj)
         {
-            if (obj.Name == obj.Description)
-            {
-                ModelState.AddModelError("name", "The description cannot exactly match the Name.");
-            }
             if (ModelState.IsValid)
             {
-                unitOfWork.Amenity.Add(obj);
+                unitOfWork.Amenity.Add(obj.Amenity);
                 unitOfWork.Save();
                 TempData["success"] = "Amenity created successfully.";
                 return RedirectToAction("Index");
             }
             else
             {
+                obj.VillaList = unitOfWork.Villa.GetAll().Select(u => new SelectListItem { 
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                });
                 TempData["error"] = "Could not create Amenity.";
                 return View(obj);
             }
         }
         public IActionResult Update(int amenityId)
         {
-            Amenity? obj = unitOfWork.Amenity.Get(u => u.Id == amenityId);
-            if (obj == null) return RedirectToAction("Error", "Home");
-            return View(obj);
+            AmenityVM amenityVM = new()
+            {
+                VillaList = unitOfWork.Villa.GetAll().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }),
+                Amenity = unitOfWork.Amenity.Get(u => u.Id == amenityId)
+            };
+            if (amenityVM.Amenity == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            return View(amenityVM);
         }
         [HttpPost]
-        public IActionResult Update(Amenity obj)
+        public IActionResult Update(AmenityVM obj)
         {
             if (ModelState.IsValid)
             {
-                unitOfWork.Amenity.Update(obj);
+                unitOfWork.Amenity.Update(obj.Amenity);
                 unitOfWork.Save();
                 TempData["success"] = "Amenity updated successfully.";
                 return RedirectToAction("Index");
             }
             else
             {
+                obj.VillaList = unitOfWork.Villa.GetAll().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                });
                 TempData["error"] = "Could not update Amenity.";
                 return View(obj);
             }
         }
         public IActionResult Delete(int amenityId)
         {
-            Amenity? obj = unitOfWork.Amenity.Get(u => u.Id == amenityId);
-            return View(obj);
+            AmenityVM amenityVM = new()
+            {
+                VillaList = unitOfWork.Villa.GetAll().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }),
+                Amenity = unitOfWork.Amenity.Get(u => u.Id == amenityId)
+            };
+            return View(amenityVM);
         }
         [HttpPost]
-        public IActionResult Delete(Amenity obj)
+        public IActionResult Delete(AmenityVM obj)
         {
-            Amenity? objFromDb = unitOfWork.Amenity.Get(u => u.Id == obj.Id);
-            if (obj == null)
+            Amenity? objFromDb = unitOfWork.Amenity.Get(u => u.Id == obj.Amenity.Id);
+            if (objFromDb is not null)
             {
-                TempData["error"] = "Could not delete Amenity.";
-                return RedirectToAction("Error", "Home");
+                unitOfWork.Amenity.Remove(objFromDb);
+                unitOfWork.Save();
+                TempData["success"] = "The amenity has been deleted successfully.";
+                return RedirectToAction(nameof(Index));
             }
-            else
-            {
-                if (obj is not null)
-                {
-                    unitOfWork.Amenity.Remove(objFromDb);
-                    unitOfWork.Save();
-                    TempData["success"] = "Amenity deleted successfully.";
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    TempData["error"] = "Could not delete Amenity.";
-                    return RedirectToAction("Error", "Home");
-                }
-            }
+            TempData["error"] = "The amenity could not be deleted.";
+            return View();
         }
     }
 }
