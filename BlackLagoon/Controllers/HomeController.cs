@@ -1,4 +1,6 @@
+using BlackLagoon.Application.Common.Interfaces;
 using BlackLagoon.Models;
+using BlackLagoon.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -6,25 +8,21 @@ namespace BlackLagoon.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IUnitOfWork unitOfWork;
+        public HomeController(IUnitOfWork _unitOfWork)
         {
-            _logger = logger;
+            unitOfWork = _unitOfWork;
         }
 
         public IActionResult Index()
         {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-        public IActionResult Error()
-        {
-            return View();
+            HomeVM homeVM = new()
+            {
+                VillaList = unitOfWork.Villa.GetAll(),
+                Nights = 1,
+                CheckInDate = DateOnly.FromDateTime(DateTime.Now)
+            };
+            return View(homeVM);
         }
     }
 }
