@@ -18,7 +18,7 @@ namespace BlackLagoon.Controllers
         {
             HomeVM homeVM = new()
             {
-                VillaList = unitOfWork.Villa.GetAll(),
+                VillaList = unitOfWork.Villa.GetAll(includeProperties:"VillaAmenity"),
                 Nights = 1,
                 CheckInDate = DateOnly.FromDateTime(DateTime.Now)
             };
