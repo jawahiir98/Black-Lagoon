@@ -22,3 +22,7 @@ body {
 .white-text {
     color: white !important;
 }
+.dropdown-item:hover {
+    background-color: #faa7a0 !important;
+    color: black !important;
+}
